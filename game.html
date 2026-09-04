@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة بيلياردو الثقوب</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        #score-board {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        canvas {
+            background-color: #076324;
+            border: 12px solid #5c3a21;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            touch-action: none;
+        }
+        .instructions {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="score-board">النقاط: <span id="score">0</span> 🎯</div>
+    <canvas id="poolTable" width="340" height="500"></canvas>
+    <div class="instructions">حرك إبهامك للخلف على الكرة البيضاء وافلت لتسديد الكرة الحمراء نحو الثقب المستهدف!</div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if(tg) tg.expand();
+
+        const canvas = document.getElementById("poolTable");
+        const ctx = canvas.getContext("2d");
+
+        let score = 0;
+        const holes = [
+            {x: 25, y: 25}, {x: 170, y: 20}, {x: 315, y: 25},
+            {x: 25, y: 475}, {x: 170, y: 480}, {x: 315, y: 475}
+        ];
+        let targetHoleIndex = 0;
+
+        let whiteBall = { x: 170, y: 380, vx: 0, vy: 0, radius: 12, isAiming: false };
+        let redBall = { x: 170, y: 200, vx: 0, vy: 0, radius: 12 };
+        let dragStart = { x: 0, y: 0 };
+        let dragEnd = { x: 0, y: 0 };
+
+        function switchTargetHole() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * holes.length);
+            } while (newIndex === targetHoleIndex);
+            targetHoleIndex = newIndex;
+        }
+
+        function drawTable() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // رسم الثقوب
+            holes.forEach((hole, index) => {
+                ctx.beginPath();
+                ctx.arc(hole.x, hole.y, 18, 0, Math.PI * 2);
+                ctx.fillStyle = index === targetHoleIndex ? "#FFD700" : "#000000";
+                ctx.fill();
+
+                if (index === targetHoleIndex) {
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = "#FF4500";
+                    ctx.stroke();
+                }
+            });
+
+            // خط الاستهداف عند السحب
+            if (whiteBall.isAiming) {
+                ctx.beginPath();
+                ctx.moveTo(whiteBall.x, whiteBall.y);
+                let dx = whiteBall.x - dragEnd.x;
+                let dy = whiteBall.y - dragEnd.y;
+                ctx.lineTo(whiteBall.x + dx, whiteBall.y + dy);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // الكرة البيضاء
+            ctx.beginPath();
+            ctx.arc(whiteBall.x, whiteBall.y, whiteBall.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fill();
+
+            // الكرة الحمراء
+            ctx.beginPath();
+            ctx.arc(redBall.x, redBall.y, redBall.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#D32F2F";
+            ctx.fill();
+        }
+
+        function updatePhysics() {
+            // تحريك الكرة البيضاء
+            whiteBall.x += whiteBall.vx;
+            whiteBall.y += whiteBall.vy;
+            whiteBall.vx *= 0.98;
+            whiteBall.vy *= 0.98;
+
+            // تحريك الكرة الحمراء
+            redBall.x += redBall.vx;
+            redBall.y += redBall.vy;
+            redBall.vx *= 0.98;
+            redBall.vy *= 0.98;
+
+            // التصادم مع الجدران
+            [whiteBall, redBall].forEach(ball => {
+                if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) ball.vx *= -1;
+                if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) ball.vy *= -1;
+            });
+
+            // تصادم الكرة البيضاء بالحمراء
+            let dx = redBall.x - whiteBall.x;
+            let dy = redBall.y - whiteBall.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < whiteBall.radius + redBall.radius) {
+                let angle = Math.atan2(dy, dx);
+                let speed = Math.sqrt(whiteBall.vx * whiteBall.vx + whiteBall.vy * whiteBall.vy);
+                redBall.vx = Math.cos(angle) * speed * 0.9;
+                redBall.vy = Math.sin(angle) * speed * 0.9;
+                whiteBall.vx *= 0.3;
+                whiteBall.vy *= 0.3;
+            }
+
+            // تحقق من دخول الكرة الحمراء للثقب المستهدف
+            let target = holes[targetHoleIndex];
+            let distToHole = Math.sqrt(Math.pow(redBall.x - target.x, 2) + Math.pow(redBall.y - target.y, 2));
+
+            if (distToHole < 18) {
+                score += 10;
+                document.getElementById("score").innerText = score;
+                resetPositions();
+                switchTargetHole();
+            }
+
+            drawTable();
+            requestAnimationFrame(updatePhysics);
+        }
+
+        function resetPositions() {
+            whiteBall.x = 170; whiteBall.y = 380; whiteBall.vx = 0; whiteBall.vy = 0;
+            redBall.x = 170; redBall.y = 200; redBall.vx = 0; redBall.vy = 0;
+        }
+
+        // إحداثيات اللمس والتحكم
+        canvas.addEventListener("touchstart", (e) => {
+            let rect = canvas.getBoundingClientRect();
+            let touch = e.touches[0];
+            dragStart = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+            whiteBall.isAiming = true;
+        });
+
+        canvas.addEventListener("touchmove", (e) => {
+            if (!whiteBall.isAiming) return;
+            let rect = canvas.getBoundingClientRect();
+            let touch = e.touches[0];
+            dragEnd = { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+        });
+
+        canvas.addEventListener("touchend", () => {
+            if (!whiteBall.isAiming) return;
+            whiteBall.isAiming = false;
+            let force = 0.15;
+            whiteBall.vx = (dragStart.x - dragEnd.x) * force;
+            whiteBall.vy = (dragStart.y - dragEnd.y) * force;
+        });
+
+        switchTargetHole();
+        updatePhysics();
+    </script>
+</body>
+</html>
