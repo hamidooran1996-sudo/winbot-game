@@ -1,726 +1,711 @@
+<!-- filepath: c:\Users\DZ Laptops\Desktop\winbot\game.html -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لعبة البلياردو</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>WinBot Billiards</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <style>
-        :root {
-            --gold: #ffd166;
-            --green: #087f5b;
-            --dark: #071b18;
-        }
+<style>
+:root {
+    --bg:#071512;
+    --panel:#10251f;
+    --green:#07583f;
+    --green2:#0b7955;
+    --gold:#ffd166;
+    --text:#f4fff9;
+    --muted:#a8c5ba;
+}
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+    margin:0;
+    min-height:100vh;
+    background:radial-gradient(circle at top,#164d3c,#071512 65%);
+    color:var(--text);
+    font-family:Arial,sans-serif;
+}
+.app {
+    width:min(100%,520px);
+    min-height:100vh;
+    margin:auto;
+    padding:12px 10px 78px;
+}
+header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+.logo { color:var(--gold); font-size:21px; font-weight:bold; }
+.user {
+    color:var(--muted);
+    font-size:12px;
+    text-align:left;
+}
+.page { display:none; animation:fade .2s ease; }
+.page.active { display:block; }
+@keyframes fade { from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none} }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+.card {
+    background:linear-gradient(145deg,#15372d,#0b201b);
+    border:1px solid #ffffff18;
+    border-radius:16px;
+    padding:15px;
+    margin-bottom:12px;
+    box-shadow:0 10px 30px #0005;
+}
+.hero {
+    text-align:center;
+    padding:25px 14px;
+}
+.hero h1 { color:var(--gold); margin:8px 0; }
+.hero p { color:var(--muted); margin:8px 0 18px; }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            overflow: hidden;
-            color: white;
-            font-family: Arial, sans-serif;
-            background:
-                radial-gradient(circle at top, #16483c 0, #071b18 55%, #020807 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+button,.button {
+    border:0;
+    border-radius:11px;
+    padding:11px 14px;
+    color:#071512;
+    background:var(--gold);
+    font-weight:bold;
+    cursor:pointer;
+}
+button.secondary,.button.secondary {
+    background:#ffffff12;
+    color:var(--text);
+    border:1px solid #ffffff20;
+}
+.full { width:100%; }
+.row { display:flex; gap:8px; align-items:center; }
+.stats {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+.stat {
+    text-align:center;
+    padding:9px 3px;
+    border-radius:10px;
+    background:#06120f99;
+    color:var(--muted);
+    font-size:11px;
+}
+.stat b {
+    display:block;
+    color:var(--gold);
+    font-size:18px;
+    margin-top:3px;
+}
+h2 { margin:5px 0 13px; font-size:19px; color:var(--gold); }
+.task {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:12px 0;
+    border-bottom:1px solid #ffffff12;
+}
+.task:last-child { border-bottom:0; }
+.task small { color:var(--muted); display:block; margin-top:4px; }
 
-        .game-page {
-            width: min(100%, 1050px);
-            min-height: 100vh;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 12px;
-        }
+.game-card { padding:8px; }
+.game-info {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:3px 4px 9px;
+}
+.game-info span { color:var(--muted); font-size:12px; }
+.game-info b { color:var(--gold); font-size:18px; }
 
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
+.table-frame {
+    position:relative;
+    width:100%;
+    padding:10px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#876033,#29170d 48%,#a3763b);
+    box-shadow:0 15px 35px #000b,inset 0 0 0 2px #d7a85c66;
+}
+canvas {
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:13px;
+    background:#07583f;
+    touch-action:none;
+}
+.power-wrap {
+    padding:8px 3px 2px;
+    color:var(--muted);
+    font-size:11px;
+}
+.power-bar {
+    height:8px;
+    margin-top:5px;
+    background:#06120f;
+    border-radius:10px;
+    overflow:hidden;
+}
+#powerFill {
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#43e58c,#ffd166,#ff5c5c);
+    transition:width .05s;
+}
+.challenge {
+    display:none;
+    position:absolute;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2;
+    min-width:175px;
+    padding:8px;
+    text-align:center;
+    border:1px solid #75ffb1;
+    border-radius:10px;
+    background:#063c2ddd;
+    color:#fff;
+    font-size:12px;
+}
+.challenge.show { display:block; }
+.challenge b { display:block; color:#7dffb5; font-size:15px; }
 
-        .title {
-            font-size: clamp(18px, 4vw, 28px);
-            font-weight: 900;
-            color: var(--gold);
-            text-shadow: 0 0 15px #ffd16655;
-        }
+.nav {
+    position:fixed;
+    z-index:5;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(100%,520px);
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:3px;
+    padding:7px 5px calc(7px + env(safe-area-inset-bottom));
+    background:#071512ee;
+    border-top:1px solid #ffffff18;
+    backdrop-filter:blur(12px);
+}
+.nav button {
+    padding:7px 2px;
+    background:transparent;
+    color:var(--muted);
+    font-size:10px;
+}
+.nav button.active { color:var(--gold); }
+.nav span { display:block; font-size:19px; margin-bottom:2px; }
 
-        .back-btn,
-        .stat {
-            border: 1px solid #ffffff22;
-            border-radius: 12px;
-            background: #071b18cc;
-            color: white;
-            padding: 9px 13px;
-            box-shadow: 0 5px 18px #0005;
-        }
-
-        .back-btn {
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .stats {
-            display: flex;
-            gap: 7px;
-        }
-
-        .stat {
-            min-width: 85px;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        .stat strong {
-            display: block;
-            color: var(--gold);
-            font-size: 20px;
-            margin-top: 2px;
-        }
-
-        .table-wrap {
-            position: relative;
-            width: 100%;
-            border-radius: 22px;
-            padding: clamp(8px, 2vw, 18px);
-            background: linear-gradient(145deg, #8b5a2b, #3e2110 45%, #a66a32);
-            box-shadow:
-                0 20px 50px #000b,
-                inset 0 0 0 3px #d89b5055,
-                inset 0 0 25px #000;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            background: #075d42;
-            touch-action: none;
-            box-shadow: inset 0 0 35px #001f15, 0 0 18px #000b;
-        }
-
-        .challenge {
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            min-width: 190px;
-            padding: 9px 14px;
-            text-align: center;
-            border: 1px solid #75ffb1;
-            border-radius: 12px;
-            background: #063c2ddd;
-            box-shadow: 0 0 20px #26ff9a55;
-            pointer-events: none;
-            display: none;
-        }
-
-        .challenge.show {
-            display: block;
-        }
-
-        .challenge b {
-            color: #7dffb5;
-            display: block;
-            font-size: 18px;
-        }
-
-        .help {
-            color: #c6d8d2;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .game-page {
-                padding: 8px;
-                gap: 8px;
-            }
-
-            .stat {
-                min-width: 68px;
-                padding: 7px 5px;
-                font-size: 11px;
-            }
-
-            .stat strong {
-                font-size: 17px;
-            }
-
-            .back-btn {
-                padding: 7px 9px;
-            }
-        }
-    </style>
+input,select {
+    width:100%;
+    padding:11px;
+    margin-top:8px;
+    border-radius:9px;
+    border:1px solid #ffffff20;
+    background:#06120f;
+    color:white;
+}
+a { color:var(--gold); }
+</style>
 </head>
 
 <body>
-    <main class="game-page">
-        <header class="topbar">
-            <button class="back-btn" id="backButton">↩ رجوع</button>
-            <div class="title">🎱 تحدي البلياردو</div>
+<div class="app">
+<header>
+    <div class="logo">🎱 WinBot</div>
+    <div class="user">
+        <span id="userName">زائر</span><br>
+        ID: <span id="userId">---</span>
+    </div>
+</header>
 
-            <div class="stats">
-                <div class="stat">
-                    النقاط
-                    <strong id="score">0</strong>
-                </div>
-                <div class="stat">
-                    التصويبات
-                    <strong id="shots">0</strong>
-                </div>
-            </div>
-        </header>
+<section id="homePage" class="page active">
+    <div class="card hero">
+        <div style="font-size:45px">🎱</div>
+        <h1>مرحبًا بك في WinBot</h1>
+        <p id="welcomeText">تحدَّ نفسك وارفع نقاطك في لعبة البلياردو.</p>
+        <button class="full" onclick="showPage('gamePage')">ابدأ اللعب</button>
+    </div>
+    <div class="card">
+        <h2>ملخص الحساب</h2>
+        <div class="stats">
+            <div class="stat">النقاط<b id="homeScore">0</b></div>
+            <div class="stat">التصويبات<b id="homeShots">0</b></div>
+            <div class="stat">المشاركات<b id="homeShares">0</b></div>
+        </div>
+    </div>
+</section>
 
-        <section class="table-wrap">
-            <canvas id="poolTable" width="900" height="560"></canvas>
+<section id="tasksPage" class="page">
+    <div class="card">
+        <h2>📋 المهام</h2>
+        <div class="task">
+            <div>🎯 العب اللعبة<small>احصل على نقاط من التصويب</small></div>
+            <button class="secondary" onclick="showPage('gamePage')">ابدأ</button>
+        </div>
+        <div class="task">
+            <div>🔗 شارك البوت<small>شارك الرابط مع أصدقائك</small></div>
+            <button class="secondary" onclick="showPage('sharePage')">فتح</button>
+        </div>
+        <div class="task">
+            <div>🏆 تحدي الدقة<small>يظهر كل 30 تصويبة</small></div>
+            <b style="color:var(--gold)">متاح</b>
+        </div>
+    </div>
+</section>
 
-            <div class="challenge" id="challengeBox">
+<section id="gamePage" class="page">
+    <div class="card game-card">
+        <div class="game-info">
+            <span>النقاط: <b id="score">0</b></span>
+            <span>التصويبات: <b id="shots">0</b></span>
+            <span>🎯 الهدف يتغير كل مرة</span>
+        </div>
+        <div class="table-frame">
+            <div id="challengeBox" class="challenge">
                 <b>🎯 تحدي الدقة</b>
                 الوقت: <span id="timer">5.0</span> ث
             </div>
-        </section>
-
-        <div class="help">
-            اسحب من الكرة البيضاء إلى الخلف ثم اترك إصبعك للتصويب
+            <canvas id="poolTable" width="430" height="700"></canvas>
+            <div class="power-wrap">
+                قوة التصويب
+                <div class="power-bar"><div id="powerFill"></div></div>
+            </div>
         </div>
-    </main>
+        <p style="text-align:center;color:var(--muted);font-size:12px">
+            اسحب من الكرة البيضاء للخلف ثم اترك إصبعك للتصويب
+        </p>
+    </div>
+</section>
 
-    <script>
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
+<section id="sharePage" class="page">
+    <div class="card">
+        <h2>🔗 المشاركة</h2>
+        <p style="color:var(--muted)">عدد المشاركات التي تمت:</p>
+        <div style="font-size:38px;color:var(--gold);text-align:center">
+            <span id="shareCount">0</span>
+        </div>
+        <button class="full" onclick="shareBot()">مشاركة البوت</button>
+        <p style="text-align:center;color:var(--muted);font-size:12px">
+            الحالة: <span id="shareStatus">لم تتم المشاركة بعد</span>
+        </p>
+    </div>
+</section>
 
-        const canvas = document.getElementById("poolTable");
-        const ctx = canvas.getContext("2d");
+<section id="settingsPage" class="page">
+    <div class="card">
+        <h2>⚙️ الإعدادات</h2>
+        <label>اللغة</label>
+        <select id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+        </select>
+        <br><br>
+        <button class="secondary full" onclick="resetProgress()">مسح التقدم المحلي</button>
+    </div>
+    <div class="card">
+        <h2>ℹ️ معلومات</h2>
+        <p style="color:var(--muted);font-size:13px">
+            الإصدار 1.0<br>
+            ستتم إضافة الحسابات والجوائز وقاعدة البيانات في المرحلة التالية.
+        </p>
+    </div>
+</section>
 
-        const W = canvas.width;
-        const H = canvas.height;
-        const BALL_RADIUS = 18;
-        const FRICTION = 0.986;
-        const MAX_POWER = 22;
+<nav class="nav">
+    <button class="active" data-page="homePage" onclick="showPage('homePage',this)">
+        <span>🏠</span>الرئيسية
+    </button>
+    <button data-page="tasksPage" onclick="showPage('tasksPage',this)">
+        <span>📋</span>المهام
+    </button>
+    <button data-page="gamePage" onclick="showPage('gamePage',this)">
+        <span>🎱</span>اللعبة
+    </button>
+    <button data-page="sharePage" onclick="showPage('sharePage',this)">
+        <span>🔗</span>مشاركة
+    </button>
+    <button data-page="settingsPage" onclick="showPage('settingsPage',this)">
+        <span>⚙️</span>الإعدادات
+    </button>
+</nav>
+</div>
 
-        let score = 0;
-        let shots = 0;
-        let aiming = false;
-        let pointer = { x: 0, y: 0 };
-        let lastTime = performance.now();
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) {
+    tg.ready();
+    tg.expand();
+}
 
-        let challenge = {
-            active: false,
-            target: { x: 0, y: 0 },
-            startedAt: 0,
-            duration: 5000,
-            evaluated: false
-        };
+const saved = JSON.parse(localStorage.getItem("winbotData") || "{}");
+let score = saved.score || 0;
+let shots = saved.shots || 0;
+let shares = saved.shares || 0;
 
-        const holes = [
-            { x: 30, y: 30 },
-            { x: W / 2, y: 25 },
-            { x: W - 30, y: 30 },
-            { x: 30, y: H - 30 },
-            { x: W / 2, y: H - 25 },
-            { x: W - 30, y: H - 30 }
-        ];
+const user = tg?.initDataUnsafe?.user;
+document.getElementById("userName").textContent =
+    user ? (user.first_name || "مستخدم") : "زائر";
+document.getElementById("userId").textContent =
+    user?.id || "---";
 
-        let targetHole = 0;
+function saveData() {
+    localStorage.setItem("winbotData", JSON.stringify({score, shots, shares}));
+    updateUI();
+}
 
-        const whiteBall = {
-            x: W * 0.28,
-            y: H * 0.72,
-            vx: 0,
-            vy: 0,
-            radius: BALL_RADIUS
-        };
+function updateUI() {
+    ["score","homeScore"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = score;
+    });
+    ["shots","homeShots"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = shots;
+    });
+    ["shareCount","homeShares"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = shares;
+    });
+}
 
-        const redBall = {
-            x: W * 0.62,
-            y: H * 0.38,
-            vx: 0,
-            vy: 0,
-            radius: BALL_RADIUS
-        };
+function showPage(id, button) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
 
-        const particles = [];
+    document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+    const navButton = button ||
+        document.querySelector(`.nav button[data-page="${id}"]`);
+    if (navButton) navButton.classList.add("active");
+}
 
-        function randomTargetHole() {
-            let next;
-            do {
-                next = Math.floor(Math.random() * holes.length);
-            } while (next === targetHole);
+function shareBot() {
+    const link = "https://t.me/";
+    const text = encodeURIComponent("جرب لعبة البلياردو في WinBot 🎱");
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
 
-            targetHole = next;
-        }
+    shares++;
+    document.getElementById("shareStatus").textContent = "تمت المشاركة";
+    saveData();
 
-        function isMoving() {
-            return Math.abs(whiteBall.vx) > 0.08 ||
-                   Math.abs(whiteBall.vy) > 0.08 ||
-                   Math.abs(redBall.vx) > 0.08 ||
-                   Math.abs(redBall.vy) > 0.08;
-        }
+    if (tg) tg.openTelegramLink(shareUrl);
+    else window.open(shareUrl, "_blank");
+}
 
-        function getPointerPosition(event) {
-            const rect = canvas.getBoundingClientRect();
+function changeLanguage(language) {
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+}
 
-            return {
-                x: (event.clientX - rect.left) * W / rect.width,
-                y: (event.clientY - rect.top) * H / rect.height
-            };
-        }
+function resetProgress() {
+    if (!confirm("هل تريد مسح التقدم؟")) return;
+    score = 0;
+    shots = 0;
+    shares = 0;
+    saveData();
+}
 
-        function distance(a, b) {
-            return Math.hypot(a.x - b.x, a.y - b.y);
-        }
+updateUI();
 
-        function clamp(value, min, max) {
-            return Math.max(min, Math.min(max, value));
-        }
+/* اللعبة */
+const canvas = document.getElementById("poolTable");
+const ctx = canvas.getContext("2d");
+const W = canvas.width;
+const H = canvas.height;
+const R = 16;
+const table = {left:34, right:W-34, top:34, bottom:H-34};
+const friction = 0.985;
+let aiming = false;
+let pointer = {x:0,y:0};
+let lastTime = performance.now();
+let targetIndex = 0;
+let challenge = null;
 
-        function startChallenge() {
-            challenge.active = true;
-            challenge.evaluated = false;
-            challenge.startedAt = performance.now();
+const holes = [
+    {x:34,y:34},{x:W/2,y:28},{x:W-34,y:34},
+    {x:34,y:H-34},{x:W/2,y:H-28},{x:W-34,y:H-34}
+];
 
-            challenge.target.x = clamp(
-                120 + Math.random() * (W - 240),
-                100,
-                W - 100
-            );
+const white = {x:W/2,y:H-150,vx:0,vy:0,r:R};
+const red = {x:W/2,y:230,vx:0,vy:0,r:R};
 
-            challenge.target.y = clamp(
-                110 + Math.random() * (H - 220),
-                90,
-                H - 90
-            );
+function speed(ball) { return Math.hypot(ball.vx,ball.vy); }
+function moving() { return speed(white)>.08 || speed(red)>.08; }
+function dist(a,b) { return Math.hypot(a.x-b.x,a.y-b.y); }
+function clamp(v,a,b) { return Math.max(a,Math.min(b,v)); }
 
-            document.getElementById("challengeBox").classList.add("show");
-        }
+function nextTarget() {
+    let n;
+    do n = Math.floor(Math.random()*holes.length);
+    while (n === targetIndex);
+    targetIndex = n;
+}
 
-        function evaluateChallenge() {
-            if (!challenge.active || challenge.evaluated) return;
+function position(e) {
+    const r = canvas.getBoundingClientRect();
+    return {
+        x:(e.clientX-r.left)*W/r.width,
+        y:(e.clientY-r.top)*H/r.height
+    };
+}
 
-            challenge.evaluated = true;
+function startChallenge() {
+    challenge = {
+        x:90+Math.random()*(W-180),
+        y:130+Math.random()*(H-280),
+        started:performance.now(),
+        duration:5000,
+        done:false
+    };
+    document.getElementById("challengeBox").classList.add("show");
+}
 
-            const maxDistance = BALL_RADIUS * 2;
-            const currentDistance = distance(redBall, challenge.target);
-            const percentage = clamp(
-                Math.round((1 - currentDistance / maxDistance) * 100),
-                0,
-                100
-            );
+function evaluateChallenge() {
+    if (!challenge || challenge.done) return;
+    challenge.done = true;
+    const d = dist(red, challenge);
+    const percent = clamp(Math.round((1-d/(R*2))*100),0,100);
+    score += percent;
+    saveData();
 
-            score += percentage;
-            document.getElementById("score").textContent = score;
+    setTimeout(() => {
+        challenge = null;
+        document.getElementById("challengeBox").classList.remove("show");
+    },1200);
+}
 
-            setTimeout(() => {
-                challenge.active = false;
-                challenge.evaluated = false;
-                document.getElementById("challengeBox").classList.remove("show");
-            }, 1300);
-        }
+function updateChallenge(now) {
+    if (!challenge) return;
+    const left = Math.max(0, challenge.duration-(now-challenge.started));
+    document.getElementById("timer").textContent = (left/1000).toFixed(1);
 
-        function updateChallenge(now) {
-            if (!challenge.active) return;
+    if (left <= 0 || (!moving() && now-challenge.started > 800))
+        evaluateChallenge();
+}
 
-            const remaining = Math.max(
-                0,
-                challenge.duration - (now - challenge.startedAt)
-            );
+function wall(ball) {
+    if (ball.x-ball.r<table.left) {
+        ball.x=table.left+ball.r;
+        ball.vx=Math.abs(ball.vx)*.9;
+    }
+    if (ball.x+ball.r>table.right) {
+        ball.x=table.right-ball.r;
+        ball.vx=-Math.abs(ball.vx)*.9;
+    }
+    if (ball.y-ball.r<table.top) {
+        ball.y=table.top+ball.r;
+        ball.vy=Math.abs(ball.vy)*.9;
+    }
+    if (ball.y+ball.r>table.bottom) {
+        ball.y=table.bottom-ball.r;
+        ball.vy=-Math.abs(ball.vy)*.9;
+    }
+}
 
-            document.getElementById("timer").textContent =
-                (remaining / 1000).toFixed(1);
+function collision() {
+    const dx=red.x-white.x, dy=red.y-white.y;
+    const d=Math.hypot(dx,dy), min=R*2;
+    if (!d || d>=min) return;
 
-            if (remaining <= 0 || (!isMoving() && now - challenge.startedAt > 900)) {
-                evaluateChallenge();
-            }
-        }
+    const nx=dx/d, ny=dy/d;
+    const overlap=min-d;
+    white.x-=nx*overlap/2;
+    white.y-=ny*overlap/2;
+    red.x+=nx*overlap/2;
+    red.y+=ny*overlap/2;
 
-        function keepInsideTable(ball) {
-            const minX = 42 + ball.radius;
-            const maxX = W - 42 - ball.radius;
-            const minY = 42 + ball.radius;
-            const maxY = H - 42 - ball.radius;
+    const rel=(white.vx-red.vx)*nx+(white.vy-red.vy)*ny;
+    if (rel<=0) return;
 
-            if (ball.x < minX) {
-                ball.x = minX;
-                ball.vx = Math.abs(ball.vx) * 0.92;
-            }
+    const impulse=rel*.96;
+    white.vx-=impulse*nx;
+    white.vy-=impulse*ny;
+    red.vx+=impulse*nx;
+    red.vy+=impulse*ny;
+}
 
-            if (ball.x > maxX) {
-                ball.x = maxX;
-                ball.vx = -Math.abs(ball.vx) * 0.92;
-            }
+function pocketCheck() {
+    const hole=holes[targetIndex];
+    if (dist(red,hole)<27) {
+        score+=10;
+        saveData();
+        red.x=clamp(W/2,table.left+R,table.right-R);
+        red.y=230;
+        red.vx=0;
+        red.vy=0;
+        nextTarget();
+    }
+}
 
-            if (ball.y < minY) {
-                ball.y = minY;
-                ball.vy = Math.abs(ball.vy) * 0.92;
-            }
+function physics() {
+    [white,red].forEach(b => {
+        b.x+=b.vx;
+        b.y+=b.vy;
+        b.vx*=friction;
+        b.vy*=friction;
+        if (Math.abs(b.vx)<.02) b.vx=0;
+        if (Math.abs(b.vy)<.02) b.vy=0;
+        wall(b);
+    });
+    collision();
+    pocketCheck();
+}
 
-            if (ball.y > maxY) {
-                ball.y = maxY;
-                ball.vy = -Math.abs(ball.vy) * 0.92;
-            }
-        }
+function circle(x,y,r,fill,stroke) {
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=fill;
+    ctx.fill();
+    if (stroke) {
+        ctx.strokeStyle=stroke;
+        ctx.lineWidth=2;
+        ctx.stroke();
+    }
+}
 
-        function collideBalls() {
-            const dx = redBall.x - whiteBall.x;
-            const dy = redBall.y - whiteBall.y;
-            const dist = Math.hypot(dx, dy);
-            const minDistance = whiteBall.radius + redBall.radius;
+function ball(ball,main,shadow) {
+    const g=ctx.createRadialGradient(
+        ball.x-6,ball.y-7,2,ball.x,ball.y,ball.r
+    );
+    g.addColorStop(0,"#fff");
+    g.addColorStop(.3,main);
+    g.addColorStop(1,shadow);
+    ctx.shadowColor="#000b";
+    ctx.shadowBlur=8;
+    circle(ball.x,ball.y,ball.r,g);
+    ctx.shadowBlur=0;
+}
 
-            if (dist === 0 || dist >= minDistance) return;
+function aim() {
+    if (!aiming || moving()) return;
 
-            const nx = dx / dist;
-            const ny = dy / dist;
-            const overlap = minDistance - dist;
+    const dx=white.x-pointer.x;
+    const dy=white.y-pointer.y;
+    const len=Math.hypot(dx,dy);
+    if (len<2) return;
 
-            whiteBall.x -= nx * overlap / 2;
-            whiteBall.y -= ny * overlap / 2;
-            redBall.x += nx * overlap / 2;
-            redBall.y += ny * overlap / 2;
+    const nx=dx/len, ny=dy/len;
+    const power=clamp(len,0,230);
+    document.getElementById("powerFill").style.width =
+        `${power/230*100}%`;
 
-            const relativeVelocity =
-                (whiteBall.vx - redBall.vx) * nx +
-                (whiteBall.vy - redBall.vy) * ny;
+    ctx.save();
+    ctx.setLineDash([4,12]);
+    ctx.strokeStyle="#fff9";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(white.x,white.y);
+    ctx.lineTo(white.x+nx*(220+power),white.y+ny*(220+power));
+    ctx.stroke();
+    ctx.setLineDash([]);
 
-            if (relativeVelocity < 0) return;
+    for(let i=1;i<=4;i++) circle(
+        white.x+nx*i*38,
+        white.y+ny*i*38,
+        3,
+        "#ffffffaa"
+    );
 
-            const impulse = relativeVelocity * 0.92;
+    const sx=white.x-nx*(70+power);
+    const sy=white.y-ny*(70+power);
+    ctx.strokeStyle="#ffe5a077";
+    ctx.lineWidth=7;
+    ctx.beginPath();
+    ctx.moveTo(sx,sy);
+    ctx.lineTo(white.x-nx*20,white.y-ny*20);
+    ctx.stroke();
+    ctx.restore();
+}
 
-            whiteBall.vx -= impulse * nx;
-            whiteBall.vy -= impulse * ny;
-            redBall.vx += impulse * nx;
-            redBall.vy += impulse * ny;
-        }
+function draw() {
+    ctx.clearRect(0,0,W,H);
 
-        function checkHole() {
-            const hole = holes[targetHole];
+    const g=ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,"#0c805b");
+    g.addColorStop(.5,"#07583f");
+    g.addColorStop(1,"#033c2d");
+    ctx.fillStyle=g;
+    ctx.fillRect(0,0,W,H);
 
-            if (distance(redBall, hole) < 25) {
-                score += 10;
-                document.getElementById("score").textContent = score;
+    const light=ctx.createRadialGradient(W/2,80,5,W/2,80,250);
+    light.addColorStop(0,"#8dffd044");
+    light.addColorStop(1,"#8dffd000");
+    ctx.fillStyle=light;
+    ctx.fillRect(0,0,W,H);
 
-                createParticles(redBall.x, redBall.y);
-                resetBalls();
-                randomTargetHole();
-            }
-        }
+    ctx.strokeStyle="#65dba566";
+    ctx.lineWidth=3;
+    ctx.strokeRect(table.left,table.top,
+        table.right-table.left,table.bottom-table.top);
 
-        function resetBalls() {
-            whiteBall.x = W * 0.28;
-            whiteBall.y = H * 0.72;
-            whiteBall.vx = 0;
-            whiteBall.vy = 0;
-
-            redBall.x = W * 0.62;
-            redBall.y = H * 0.38;
-            redBall.vx = 0;
-            redBall.vy = 0;
-        }
-
-        function createParticles(x, y) {
-            for (let i = 0; i < 22; i++) {
-                particles.push({
-                    x,
-                    y,
-                    vx: (Math.random() - 0.5) * 5,
-                    vy: (Math.random() - 0.5) * 5,
-                    life: 1
-                });
-            }
-        }
-
-        function updateParticles() {
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-
-                p.x += p.vx;
-                p.y += p.vy;
-                p.life -= 0.025;
-
-                if (p.life <= 0) particles.splice(i, 1);
-            }
-        }
-
-        function updatePhysics() {
-            whiteBall.x += whiteBall.vx;
-            whiteBall.y += whiteBall.vy;
-            redBall.x += redBall.vx;
-            redBall.y += redBall.vy;
-
-            whiteBall.vx *= FRICTION;
-            whiteBall.vy *= FRICTION;
-            redBall.vx *= FRICTION;
-            redBall.vy *= FRICTION;
-
-            if (Math.abs(whiteBall.vx) < 0.02) whiteBall.vx = 0;
-            if (Math.abs(whiteBall.vy) < 0.02) whiteBall.vy = 0;
-            if (Math.abs(redBall.vx) < 0.02) redBall.vx = 0;
-            if (Math.abs(redBall.vy) < 0.02) redBall.vy = 0;
-
-            keepInsideTable(whiteBall);
-            keepInsideTable(redBall);
-            collideBalls();
-            checkHole();
-            updateParticles();
-        }
-
-        function drawRoundedRect(x, y, width, height, radius) {
+    holes.forEach((h,i)=>{
+        circle(h.x,h.y,27,"#020605");
+        if(i===targetIndex) {
             ctx.beginPath();
-            ctx.roundRect(x, y, width, height, radius);
-            ctx.fill();
-        }
-
-        function drawTable() {
-            ctx.clearRect(0, 0, W, H);
-
-            const green = ctx.createRadialGradient(
-                W / 2, H / 2, 20,
-                W / 2, H / 2, W
-            );
-
-            green.addColorStop(0, "#15966b");
-            green.addColorStop(0.55, "#08704f");
-            green.addColorStop(1, "#03442f");
-
-            ctx.fillStyle = green;
-            drawRoundedRect(0, 0, W, H, 18);
-
-            ctx.strokeStyle = "#65dba5aa";
-            ctx.lineWidth = 3;
-            ctx.strokeRect(45, 45, W - 90, H - 90);
-
-            holes.forEach((hole, index) => {
-                const gradient = ctx.createRadialGradient(
-                    hole.x - 5, hole.y - 5, 2,
-                    hole.x, hole.y, 27
-                );
-
-                gradient.addColorStop(0, "#18231f");
-                gradient.addColorStop(1, "#000000");
-
-                ctx.beginPath();
-                ctx.arc(hole.x, hole.y, 27, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-
-                if (index === targetHole) {
-                    ctx.beginPath();
-                    ctx.arc(hole.x, hole.y, 33, 0, Math.PI * 2);
-                    ctx.strokeStyle = "#ffd166";
-                    ctx.lineWidth = 3;
-                    ctx.shadowColor = "#ffd166";
-                    ctx.shadowBlur = 14;
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                }
-            });
-
-            if (challenge.active) {
-                ctx.beginPath();
-                ctx.arc(
-                    challenge.target.x,
-                    challenge.target.y,
-                    BALL_RADIUS,
-                    0,
-                    Math.PI * 2
-                );
-
-                ctx.fillStyle = "#50fa7b55";
-                ctx.fill();
-
-                ctx.strokeStyle = "#8affb5";
-                ctx.lineWidth = 4;
-                ctx.shadowColor = "#50fa7b";
-                ctx.shadowBlur = 18;
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-            }
-
-            drawAimGuide();
-            drawBall(whiteBall, "#ffffff", "#b9d8d4");
-            drawBall(redBall, "#ff4d5d", "#9d1020");
-
-            particles.forEach(p => {
-                ctx.globalAlpha = p.life;
-                ctx.fillStyle = "#ffd166";
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1;
-            });
-        }
-
-        function drawBall(ball, color, shadowColor) {
-            const gradient = ctx.createRadialGradient(
-                ball.x - 7,
-                ball.y - 8,
-                2,
-                ball.x,
-                ball.y,
-                ball.radius
-            );
-
-            gradient.addColorStop(0, "#ffffff");
-            gradient.addColorStop(0.25, color);
-            gradient.addColorStop(1, shadowColor);
-
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            ctx.fillStyle = gradient;
-            ctx.shadowColor = "#000b";
-            ctx.shadowBlur = 9;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        }
-
-        function drawAimGuide() {
-            if (!aiming || isMoving()) return;
-
-            const dx = whiteBall.x - pointer.x;
-            const dy = whiteBall.y - pointer.y;
-            const length = Math.hypot(dx, dy);
-
-            if (length < 3) return;
-
-            const nx = dx / length;
-            const ny = dy / length;
-            const power = Math.min(length, 170);
-
-            ctx.save();
-
-            // خط التصويب المنقط
-            ctx.setLineDash([5, 13]);
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "#ffffff88";
-            ctx.beginPath();
-            ctx.moveTo(whiteBall.x, whiteBall.y);
-            ctx.lineTo(
-                whiteBall.x + nx * (180 + power),
-                whiteBall.y + ny * (180 + power)
-            );
+            ctx.arc(h.x,h.y,34,0,Math.PI*2);
+            ctx.strokeStyle="#ffd166";
+            ctx.lineWidth=3;
+            ctx.shadowColor="#ffd166";
+            ctx.shadowBlur=15;
             ctx.stroke();
-            ctx.setLineDash([]);
-
-            // نقاط التصويب
-            for (let i = 1; i <= 4; i++) {
-                ctx.beginPath();
-                ctx.arc(
-                    whiteBall.x + nx * i * 38,
-                    whiteBall.y + ny * i * 38,
-                    4,
-                    0,
-                    Math.PI * 2
-                );
-                ctx.fillStyle = "#ffffffaa";
-                ctx.fill();
-            }
-
-            // عصا التصويب الشفافة
-            const cueStartX = whiteBall.x - nx * (100 + power);
-            const cueStartY = whiteBall.y - ny * (100 + power);
-
-            const cueGradient = ctx.createLinearGradient(
-                cueStartX,
-                cueStartY,
-                whiteBall.x,
-                whiteBall.y
-            );
-
-            cueGradient.addColorStop(0, "#d9a15b22");
-            cueGradient.addColorStop(0.75, "#ffe0a166");
-            cueGradient.addColorStop(1, "#ffffffcc");
-
-            ctx.strokeStyle = cueGradient;
-            ctx.lineWidth = 8;
-            ctx.beginPath();
-            ctx.moveTo(cueStartX, cueStartY);
-            ctx.lineTo(whiteBall.x - nx * 22, whiteBall.y - ny * 22);
-            ctx.stroke();
-
-            ctx.restore();
+            ctx.shadowBlur=0;
         }
+    });
 
-        function shoot() {
-            if (isMoving()) return;
+    if (challenge) {
+        circle(challenge.x,challenge.y,R,"#50fa7b55","#9affbd");
+    }
 
-            const dx = whiteBall.x - pointer.x;
-            const dy = whiteBall.y - pointer.y;
-            const length = Math.hypot(dx, dy);
+    aim();
+    ball(white,"#fff","#b9d8d4");
+    ball(red,"#ff4d5d","#940d1d");
+}
 
-            if (length < 12) return;
+function shoot() {
+    if (moving()) return;
+    const dx=white.x-pointer.x, dy=white.y-pointer.y;
+    const len=Math.hypot(dx,dy);
+    if(len<10) return;
 
-            const power = Math.min(length, 170) / 170 * MAX_POWER;
+    const power=clamp(len,0,230)/230*27;
+    white.vx=dx/len*power;
+    white.vy=dy/len*power;
+    shots++;
+    saveData();
+    nextTarget();
 
-            whiteBall.vx = dx / length * power;
-            whiteBall.vy = dy / length * power;
+    if(shots%30===0) startChallenge();
+}
 
-            shots++;
-            document.getElementById("shots").textContent = shots;
+canvas.addEventListener("pointerdown",e=>{
+    if(moving()) return;
+    aiming=true;
+    pointer=position(e);
+    canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener("pointermove",e=>{
+    if(aiming) pointer=position(e);
+});
+canvas.addEventListener("pointerup",()=>{
+    if(!aiming) return;
+    aiming=false;
+    shoot();
+    document.getElementById("powerFill").style.width="0%";
+});
+canvas.addEventListener("pointercancel",()=>{
+    aiming=false;
+    document.getElementById("powerFill").style.width="0%";
+});
 
-            if (shots % 30 === 0) {
-                startChallenge();
-            }
-        }
+function loop(now) {
+    physics();
+    updateChallenge(now);
+    draw();
+    requestAnimationFrame(loop);
+}
 
-        canvas.addEventListener("pointerdown", event => {
-            if (isMoving()) return;
-
-            aiming = true;
-            pointer = getPointerPosition(event);
-            canvas.setPointerCapture(event.pointerId);
-        });
-
-        canvas.addEventListener("pointermove", event => {
-            if (!aiming) return;
-            pointer = getPointerPosition(event);
-        });
-
-        canvas.addEventListener("pointerup", () => {
-            if (!aiming) return;
-
-            aiming = false;
-            shoot();
-        });
-
-        canvas.addEventListener("pointercancel", () => {
-            aiming = false;
-        });
-
-        document.getElementById("backButton").addEventListener("click", () => {
-            if (tg) {
-                tg.close();
-            } else {
-                history.back();
-            }
-        });
-
-        function loop(now) {
-            const delta = Math.min((now - lastTime) / 16.67, 2);
-            lastTime = now;
-
-            updatePhysics();
-            updateChallenge(now);
-            drawTable();
-
-            requestAnimationFrame(loop);
-        }
-
-        randomTargetHole();
-        requestAnimationFrame(loop);
-    </script>
+nextTarget();
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
