@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\DZ Laptops\Desktop\winbot\game.html -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,168 +8,271 @@
 
 <style>
 :root {
-    --bg:#071512;
+    --bg:#07111f;
     --panel:#10251f;
-    --green:#07583f;
-    --green2:#0b7955;
     --gold:#ffd166;
     --text:#f4fff9;
     --muted:#a8c5ba;
 }
-* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+* {
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
 body {
     margin:0;
     min-height:100vh;
-    background:radial-gradient(circle at top,#164d3c,#071512 65%);
+    overflow-x:hidden;
+    background:radial-gradient(circle at top,#142c52,#050a14 70%);
     color:var(--text);
     font-family:Arial,sans-serif;
 }
+
 .app {
-    width:min(100%,520px);
+    width:min(100%,560px);
     min-height:100vh;
     margin:auto;
-    padding:12px 10px 78px;
+    padding:10px 9px 78px;
 }
+
 header {
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin-bottom:12px;
+    gap:8px;
+    margin-bottom:10px;
 }
-.logo { color:var(--gold); font-size:21px; font-weight:bold; }
+
+.logo {
+    color:var(--gold);
+    font-size:20px;
+    font-weight:bold;
+}
+
 .user {
     color:var(--muted);
-    font-size:12px;
+    font-size:11px;
     text-align:left;
 }
-.page { display:none; animation:fade .2s ease; }
-.page.active { display:block; }
-@keyframes fade { from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none} }
+
+.back-game {
+    display:none;
+    border:1px solid #ffffff22;
+    border-radius:9px;
+    padding:5px 10px;
+    background:#ffffff12;
+    color:white;
+    font-size:20px;
+}
+
+body.playing .back-game {
+    display:block;
+}
+
+body.playing .nav {
+    display:none;
+}
+
+body.playing .app {
+    width:min(100%,650px);
+    padding:7px;
+}
+
+.page {
+    display:none;
+    animation:fade .2s ease;
+}
+
+.page.active {
+    display:block;
+}
+
+@keyframes fade {
+    from { opacity:.2; transform:translateY(5px); }
+    to { opacity:1; transform:none; }
+}
 
 .card {
     background:linear-gradient(145deg,#15372d,#0b201b);
     border:1px solid #ffffff18;
     border-radius:16px;
-    padding:15px;
-    margin-bottom:12px;
-    box-shadow:0 10px 30px #0005;
+    padding:14px;
+    margin-bottom:10px;
+    box-shadow:0 10px 30px #0007;
 }
+
 .hero {
     text-align:center;
-    padding:25px 14px;
+    padding:24px 13px;
 }
-.hero h1 { color:var(--gold); margin:8px 0; }
-.hero p { color:var(--muted); margin:8px 0 18px; }
 
-button,.button {
+.hero h1 {
+    color:var(--gold);
+    margin:8px 0;
+}
+
+.hero p {
+    color:var(--muted);
+    margin:8px 0 18px;
+}
+
+button {
     border:0;
-    border-radius:11px;
-    padding:11px 14px;
+    border-radius:10px;
+    padding:10px 13px;
     color:#071512;
     background:var(--gold);
     font-weight:bold;
     cursor:pointer;
 }
-button.secondary,.button.secondary {
+
+button.secondary {
     background:#ffffff12;
     color:var(--text);
     border:1px solid #ffffff20;
 }
-.full { width:100%; }
-.row { display:flex; gap:8px; align-items:center; }
+
+.full {
+    width:100%;
+}
+
 .stats {
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:8px;
+    gap:7px;
 }
+
 .stat {
     text-align:center;
-    padding:9px 3px;
-    border-radius:10px;
+    padding:7px 2px;
+    border-radius:9px;
     background:#06120f99;
     color:var(--muted);
-    font-size:11px;
+    font-size:10px;
 }
+
 .stat b {
     display:block;
     color:var(--gold);
-    font-size:18px;
+    font-size:17px;
     margin-top:3px;
 }
-h2 { margin:5px 0 13px; font-size:19px; color:var(--gold); }
+
+h2 {
+    margin:5px 0 12px;
+    font-size:18px;
+    color:var(--gold);
+}
+
 .task {
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:8px;
-    padding:12px 0;
+    padding:11px 0;
     border-bottom:1px solid #ffffff12;
 }
-.task:last-child { border-bottom:0; }
-.task small { color:var(--muted); display:block; margin-top:4px; }
 
-.game-card { padding:8px; }
+.task:last-child {
+    border-bottom:0;
+}
+
+.task small {
+    display:block;
+    margin-top:4px;
+    color:var(--muted);
+}
+
+.game-card {
+    padding:5px;
+}
+
 .game-info {
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:3px 4px 9px;
+    gap:5px;
+    padding:2px 3px 6px;
 }
-.game-info span { color:var(--muted); font-size:12px; }
-.game-info b { color:var(--gold); font-size:18px; }
+
+.game-info span {
+    color:var(--muted);
+    font-size:10px;
+}
+
+.game-info b {
+    color:var(--gold);
+    font-size:15px;
+}
 
 .table-frame {
     position:relative;
     width:100%;
-    padding:10px;
-    border-radius:20px;
-    background:linear-gradient(135deg,#876033,#29170d 48%,#a3763b);
-    box-shadow:0 15px 35px #000b,inset 0 0 0 2px #d7a85c66;
+    padding:8px;
+    border-radius:18px;
+    background:
+        linear-gradient(135deg,#8b6234,#2a170b 48%,#a7793e);
+    box-shadow:
+        0 15px 35px #000c,
+        inset 0 0 0 2px #d7a85c66;
 }
+
 canvas {
     display:block;
     width:100%;
     height:auto;
-    border-radius:13px;
+    border-radius:11px;
     background:#07583f;
     touch-action:none;
 }
+
 .power-wrap {
-    padding:8px 3px 2px;
+    padding:7px 3px 1px;
     color:var(--muted);
-    font-size:11px;
+    font-size:10px;
 }
+
 .power-bar {
-    height:8px;
-    margin-top:5px;
+    height:7px;
+    margin-top:4px;
     background:#06120f;
     border-radius:10px;
     overflow:hidden;
 }
+
 #powerFill {
     height:100%;
     width:0%;
     background:linear-gradient(90deg,#43e58c,#ffd166,#ff5c5c);
-    transition:width .05s;
 }
+
 .challenge {
     display:none;
     position:absolute;
-    top:18px;
+    top:15px;
     left:50%;
     transform:translateX(-50%);
     z-index:2;
-    min-width:175px;
-    padding:8px;
+    min-width:170px;
+    padding:7px;
     text-align:center;
     border:1px solid #75ffb1;
     border-radius:10px;
     background:#063c2ddd;
     color:#fff;
-    font-size:12px;
+    font-size:11px;
 }
-.challenge.show { display:block; }
-.challenge b { display:block; color:#7dffb5; font-size:15px; }
+
+.challenge.show {
+    display:block;
+}
+
+.challenge b {
+    display:block;
+    color:#7dffb5;
+    font-size:14px;
+}
 
 .nav {
     position:fixed;
@@ -178,41 +280,54 @@ canvas {
     bottom:0;
     left:50%;
     transform:translateX(-50%);
-    width:min(100%,520px);
+    width:min(100%,560px);
     display:grid;
     grid-template-columns:repeat(5,1fr);
     gap:3px;
-    padding:7px 5px calc(7px + env(safe-area-inset-bottom));
+    padding:6px 5px calc(6px + env(safe-area-inset-bottom));
     background:#071512ee;
     border-top:1px solid #ffffff18;
     backdrop-filter:blur(12px);
 }
+
 .nav button {
-    padding:7px 2px;
+    padding:6px 2px;
     background:transparent;
     color:var(--muted);
     font-size:10px;
 }
-.nav button.active { color:var(--gold); }
-.nav span { display:block; font-size:19px; margin-bottom:2px; }
 
-input,select {
+.nav button.active {
+    color:var(--gold);
+}
+
+.nav span {
+    display:block;
+    font-size:18px;
+    margin-bottom:2px;
+}
+
+input,
+select {
     width:100%;
-    padding:11px;
-    margin-top:8px;
+    padding:10px;
+    margin-top:7px;
     border-radius:9px;
     border:1px solid #ffffff20;
     background:#06120f;
     color:white;
 }
-a { color:var(--gold); }
 </style>
 </head>
 
 <body>
 <div class="app">
+
 <header>
+    <button id="backGame" class="back-game">↩</button>
+
     <div class="logo">🎱 WinBot</div>
+
     <div class="user">
         <span id="userName">زائر</span><br>
         ID: <span id="userId">---</span>
@@ -221,11 +336,14 @@ a { color:var(--gold); }
 
 <section id="homePage" class="page active">
     <div class="card hero">
-        <div style="font-size:45px">🎱</div>
+        <div style="font-size:44px">🎱</div>
         <h1>مرحبًا بك في WinBot</h1>
-        <p id="welcomeText">تحدَّ نفسك وارفع نقاطك في لعبة البلياردو.</p>
-        <button class="full" onclick="showPage('gamePage')">ابدأ اللعب</button>
+        <p>تحدَّ نفسك وارفع نقاطك في لعبة البلياردو.</p>
+        <button class="full" onclick="showPage('gamePage')">
+            ابدأ اللعب
+        </button>
     </div>
+
     <div class="card">
         <h2>ملخص الحساب</h2>
         <div class="stats">
@@ -239,16 +357,42 @@ a { color:var(--gold); }
 <section id="tasksPage" class="page">
     <div class="card">
         <h2>📋 المهام</h2>
+
         <div class="task">
-            <div>🎯 العب اللعبة<small>احصل على نقاط من التصويب</small></div>
-            <button class="secondary" onclick="showPage('gamePage')">ابدأ</button>
+            <div>
+                🎯 العب اللعبة
+                <small>احصل على نقاط من التصويب</small>
+            </div>
+            <button class="secondary" onclick="showPage('gamePage')">
+                ابدأ
+            </button>
         </div>
+
         <div class="task">
-            <div>🔗 شارك البوت<small>شارك الرابط مع أصدقائك</small></div>
-            <button class="secondary" onclick="showPage('sharePage')">فتح</button>
+            <div>
+                📺 مشاهدة إعلان
+                <small>احصل على نقاط بعد مشاهدة الإعلان</small>
+            </div>
+            <button class="secondary" onclick="watchAd()">
+                مشاهدة
+            </button>
         </div>
+
         <div class="task">
-            <div>🏆 تحدي الدقة<small>يظهر كل 30 تصويبة</small></div>
+            <div>
+                🔗 شارك البوت
+                <small>شارك الرابط مع أصدقائك</small>
+            </div>
+            <button class="secondary" onclick="showPage('sharePage')">
+                فتح
+            </button>
+        </div>
+
+        <div class="task">
+            <div>
+                🏆 تحدي الدقة
+                <small>يظهر كل 30 تصويبة</small>
+            </div>
             <b style="color:var(--gold)">متاح</b>
         </div>
     </div>
@@ -259,20 +403,26 @@ a { color:var(--gold); }
         <div class="game-info">
             <span>النقاط: <b id="score">0</b></span>
             <span>التصويبات: <b id="shots">0</b></span>
-            <span>🎯 الهدف يتغير كل مرة</span>
+            <span>🎯 هدف جديد</span>
         </div>
+
         <div class="table-frame">
             <div id="challengeBox" class="challenge">
                 <b>🎯 تحدي الدقة</b>
                 الوقت: <span id="timer">5.0</span> ث
             </div>
+
             <canvas id="poolTable" width="430" height="700"></canvas>
+
             <div class="power-wrap">
                 قوة التصويب
-                <div class="power-bar"><div id="powerFill"></div></div>
+                <div class="power-bar">
+                    <div id="powerFill"></div>
+                </div>
             </div>
         </div>
-        <p style="text-align:center;color:var(--muted);font-size:12px">
+
+        <p style="text-align:center;color:var(--muted);font-size:11px">
             اسحب من الكرة البيضاء للخلف ثم اترك إصبعك للتصويب
         </p>
     </div>
@@ -282,11 +432,16 @@ a { color:var(--gold); }
     <div class="card">
         <h2>🔗 المشاركة</h2>
         <p style="color:var(--muted)">عدد المشاركات التي تمت:</p>
-        <div style="font-size:38px;color:var(--gold);text-align:center">
+
+        <div style="font-size:36px;color:var(--gold);text-align:center">
             <span id="shareCount">0</span>
         </div>
-        <button class="full" onclick="shareBot()">مشاركة البوت</button>
-        <p style="text-align:center;color:var(--muted);font-size:12px">
+
+        <button class="full" onclick="shareBot()">
+            مشاركة البوت
+        </button>
+
+        <p style="text-align:center;color:var(--muted);font-size:11px">
             الحالة: <span id="shareStatus">لم تتم المشاركة بعد</span>
         </p>
     </div>
@@ -295,417 +450,802 @@ a { color:var(--gold); }
 <section id="settingsPage" class="page">
     <div class="card">
         <h2>⚙️ الإعدادات</h2>
+
         <label>اللغة</label>
         <select id="languageSelect" onchange="changeLanguage(this.value)">
             <option value="ar">العربية</option>
             <option value="en">English</option>
         </select>
+
         <br><br>
-        <button class="secondary full" onclick="resetProgress()">مسح التقدم المحلي</button>
-    </div>
-    <div class="card">
-        <h2>ℹ️ معلومات</h2>
-        <p style="color:var(--muted);font-size:13px">
-            الإصدار 1.0<br>
-            ستتم إضافة الحسابات والجوائز وقاعدة البيانات في المرحلة التالية.
-        </p>
+
+        <button class="secondary full" onclick="resetProgress()">
+            مسح التقدم المحلي
+        </button>
     </div>
 </section>
 
 <nav class="nav">
-    <button class="active" data-page="homePage" onclick="showPage('homePage',this)">
+    <button class="active" data-page="homePage"
+            onclick="showPage('homePage',this)">
         <span>🏠</span>الرئيسية
     </button>
-    <button data-page="tasksPage" onclick="showPage('tasksPage',this)">
+
+    <button data-page="tasksPage"
+            onclick="showPage('tasksPage',this)">
         <span>📋</span>المهام
     </button>
-    <button data-page="gamePage" onclick="showPage('gamePage',this)">
+
+    <button data-page="gamePage"
+            onclick="showPage('gamePage',this)">
         <span>🎱</span>اللعبة
     </button>
-    <button data-page="sharePage" onclick="showPage('sharePage',this)">
+
+    <button data-page="sharePage"
+            onclick="showPage('sharePage',this)">
         <span>🔗</span>مشاركة
     </button>
-    <button data-page="settingsPage" onclick="showPage('settingsPage',this)">
+
+    <button data-page="settingsPage"
+            onclick="showPage('settingsPage',this)">
         <span>⚙️</span>الإعدادات
     </button>
 </nav>
-</div>
 
 <script>
+    // filepath: c:\Users\DZ Laptops\Desktop\winbot\game.html
 const tg = window.Telegram?.WebApp;
+
 if (tg) {
     tg.ready();
     tg.expand();
 }
 
-const saved = JSON.parse(localStorage.getItem("winbotData") || "{}");
+const saved = JSON.parse(
+    localStorage.getItem("winbotData") || "{}"
+);
+
 let score = saved.score || 0;
 let shots = saved.shots || 0;
 let shares = saved.shares || 0;
 
-const user = tg?.initDataUnsafe?.user;
+const telegramUser = tg?.initDataUnsafe?.user;
+
 document.getElementById("userName").textContent =
-    user ? (user.first_name || "مستخدم") : "زائر";
+    telegramUser?.first_name || "زائر";
+
 document.getElementById("userId").textContent =
-    user?.id || "---";
+    telegramUser?.id || "---";
 
 function saveData() {
-    localStorage.setItem("winbotData", JSON.stringify({score, shots, shares}));
+    localStorage.setItem(
+        "winbotData",
+        JSON.stringify({ score, shots, shares })
+    );
+
     updateUI();
 }
 
 function updateUI() {
-    ["score","homeScore"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = score;
-    });
-    ["shots","homeShots"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = shots;
-    });
-    ["shareCount","homeShares"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = shares;
-    });
+    document.getElementById("score").textContent = score;
+    document.getElementById("homeScore").textContent = score;
+
+    document.getElementById("shots").textContent = shots;
+    document.getElementById("homeShots").textContent = shots;
+
+    document.getElementById("shareCount").textContent = shares;
+    document.getElementById("homeShares").textContent = shares;
 }
 
-function showPage(id, button) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+function showPage(pageId, button) {
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
 
-    document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+    const page = document.getElementById(pageId);
+
+    if (page) {
+        page.classList.add("active");
+    }
+
+    document.querySelectorAll(".nav button").forEach(item => {
+        item.classList.remove("active");
+    });
+
     const navButton = button ||
-        document.querySelector(`.nav button[data-page="${id}"]`);
-    if (navButton) navButton.classList.add("active");
+        document.querySelector(
+            `.nav button[data-page="${pageId}"]`
+        );
+
+    if (navButton) {
+        navButton.classList.add("active");
+    }
+
+    const playing = pageId === "gamePage";
+    document.body.classList.toggle("playing", playing);
+
+    if (playing) {
+        resizeGameCanvas();
+    }
 }
+
+document.getElementById("backGame").addEventListener("click", () => {
+    showPage("homePage");
+});
 
 function shareBot() {
-    const link = "https://t.me/";
-    const text = encodeURIComponent("جرب لعبة البلياردو في WinBot 🎱");
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
+    const botLink = "https://t.me/";
+
+    const message = encodeURIComponent(
+        "جرب لعبة البلياردو في WinBot 🎱"
+    );
+
+    const shareUrl =
+        "https://t.me/share/url?url=" +
+        encodeURIComponent(botLink) +
+        "&text=" +
+        message;
 
     shares++;
-    document.getElementById("shareStatus").textContent = "تمت المشاركة";
+
+    document.getElementById("shareStatus").textContent =
+        "تمت المشاركة";
+
     saveData();
 
-    if (tg) tg.openTelegramLink(shareUrl);
-    else window.open(shareUrl, "_blank");
+    if (tg) {
+        tg.openTelegramLink(shareUrl);
+    } else {
+        window.open(shareUrl, "_blank");
+    }
+}
+
+function watchAd() {
+    alert(
+        "مشاهدة الإعلانات ستعمل بعد ربط مزود إعلانات حقيقي."
+    );
 }
 
 function changeLanguage(language) {
     document.documentElement.lang = language;
-    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+    document.documentElement.dir =
+        language === "ar" ? "rtl" : "ltr";
 }
 
 function resetProgress() {
-    if (!confirm("هل تريد مسح التقدم؟")) return;
+    const confirmed = confirm("هل تريد مسح التقدم؟");
+
+    if (!confirmed) {
+        return;
+    }
+
     score = 0;
     shots = 0;
     shares = 0;
+
     saveData();
 }
 
 updateUI();
 
-/* اللعبة */
+/* إعداد لعبة البلياردو */
+
 const canvas = document.getElementById("poolTable");
 const ctx = canvas.getContext("2d");
+
 const W = canvas.width;
 const H = canvas.height;
-const R = 16;
-const table = {left:34, right:W-34, top:34, bottom:H-34};
-const friction = 0.985;
-let aiming = false;
-let pointer = {x:0,y:0};
-let lastTime = performance.now();
-let targetIndex = 0;
-let challenge = null;
+
+const BALL_RADIUS = 16;
+const FRICTION = 0.986;
+const MAX_POWER = 28;
+
+const table = {
+    left: 34,
+    right: W - 34,
+    top: 34,
+    bottom: H - 34
+};
 
 const holes = [
-    {x:34,y:34},{x:W/2,y:28},{x:W-34,y:34},
-    {x:34,y:H-34},{x:W/2,y:H-28},{x:W-34,y:H-34}
+    { x: 34, y: 34 },
+    { x: W / 2, y: 28 },
+    { x: W - 34, y: 34 },
+    { x: 34, y: H - 34 },
+    { x: W / 2, y: H - 28 },
+    { x: W - 34, y: H - 34 }
 ];
 
-const white = {x:W/2,y:H-150,vx:0,vy:0,r:R};
-const red = {x:W/2,y:230,vx:0,vy:0,r:R};
+let targetIndex = 0;
+let aiming = false;
+let pointer = { x: 0, y: 0 };
+let lastTime = performance.now();
+let challenge = null;
 
-function speed(ball) { return Math.hypot(ball.vx,ball.vy); }
-function moving() { return speed(white)>.08 || speed(red)>.08; }
-function dist(a,b) { return Math.hypot(a.x-b.x,a.y-b.y); }
-function clamp(v,a,b) { return Math.max(a,Math.min(b,v)); }
+const whiteBall = {
+    x: W / 2,
+    y: H - 150,
+    vx: 0,
+    vy: 0,
+    radius: BALL_RADIUS
+};
 
-function nextTarget() {
-    let n;
-    do n = Math.floor(Math.random()*holes.length);
-    while (n === targetIndex);
-    targetIndex = n;
+const redBall = {
+    x: W / 2,
+    y: 230,
+    vx: 0,
+    vy: 0,
+    radius: BALL_RADIUS
+};
+
+function resizeGameCanvas() {
+    canvas.style.width = "100%";
 }
 
-function position(e) {
-    const r = canvas.getBoundingClientRect();
+function distance(first, second) {
+    return Math.hypot(
+        first.x - second.x,
+        first.y - second.y
+    );
+}
+
+function clamp(value, minimum, maximum) {
+    return Math.max(
+        minimum,
+        Math.min(maximum, value)
+    );
+}
+
+function ballSpeed(ball) {
+    return Math.hypot(ball.vx, ball.vy);
+}
+
+function isMoving() {
+    return (
+        ballSpeed(whiteBall) > 0.08 ||
+        ballSpeed(redBall) > 0.08
+    );
+}
+
+function chooseNextTarget() {
+    let nextIndex;
+
+    do {
+        nextIndex = Math.floor(
+            Math.random() * holes.length
+        );
+    } while (nextIndex === targetIndex);
+
+    targetIndex = nextIndex;
+}
+
+function getPointerPosition(event) {
+    const rect = canvas.getBoundingClientRect();
+
     return {
-        x:(e.clientX-r.left)*W/r.width,
-        y:(e.clientY-r.top)*H/r.height
+        x: (event.clientX - rect.left) *
+            W / rect.width,
+
+        y: (event.clientY - rect.top) *
+            H / rect.height
     };
 }
 
 function startChallenge() {
     challenge = {
-        x:90+Math.random()*(W-180),
-        y:130+Math.random()*(H-280),
-        started:performance.now(),
-        duration:5000,
-        done:false
+        x: 90 + Math.random() * (W - 180),
+        y: 130 + Math.random() * (H - 280),
+        startedAt: performance.now(),
+        duration: 5000,
+        completed: false
     };
-    document.getElementById("challengeBox").classList.add("show");
+
+    document
+        .getElementById("challengeBox")
+        .classList.add("show");
 }
 
 function evaluateChallenge() {
-    if (!challenge || challenge.done) return;
-    challenge.done = true;
-    const d = dist(red, challenge);
-    const percent = clamp(Math.round((1-d/(R*2))*100),0,100);
-    score += percent;
+    if (!challenge || challenge.completed) {
+        return;
+    }
+
+    challenge.completed = true;
+
+    const currentDistance = distance(
+        redBall,
+        challenge
+    );
+
+    const maximumDistance = BALL_RADIUS * 2;
+
+    const percentage = clamp(
+        Math.round(
+            (1 - currentDistance / maximumDistance) * 100
+        ),
+        0,
+        100
+    );
+
+    score += percentage;
     saveData();
 
     setTimeout(() => {
         challenge = null;
-        document.getElementById("challengeBox").classList.remove("show");
-    },1200);
+
+        document
+            .getElementById("challengeBox")
+            .classList.remove("show");
+    }, 1200);
 }
 
 function updateChallenge(now) {
-    if (!challenge) return;
-    const left = Math.max(0, challenge.duration-(now-challenge.started));
-    document.getElementById("timer").textContent = (left/1000).toFixed(1);
+    if (!challenge) {
+        return;
+    }
 
-    if (left <= 0 || (!moving() && now-challenge.started > 800))
+    const remaining = Math.max(
+        0,
+        challenge.duration -
+        (now - challenge.startedAt)
+    );
+
+    document.getElementById("timer").textContent =
+        (remaining / 1000).toFixed(1);
+
+    const waitingFinished =
+        !isMoving() &&
+        now - challenge.startedAt > 800;
+
+    if (remaining <= 0 || waitingFinished) {
         evaluateChallenge();
-}
-
-function wall(ball) {
-    if (ball.x-ball.r<table.left) {
-        ball.x=table.left+ball.r;
-        ball.vx=Math.abs(ball.vx)*.9;
-    }
-    if (ball.x+ball.r>table.right) {
-        ball.x=table.right-ball.r;
-        ball.vx=-Math.abs(ball.vx)*.9;
-    }
-    if (ball.y-ball.r<table.top) {
-        ball.y=table.top+ball.r;
-        ball.vy=Math.abs(ball.vy)*.9;
-    }
-    if (ball.y+ball.r>table.bottom) {
-        ball.y=table.bottom-ball.r;
-        ball.vy=-Math.abs(ball.vy)*.9;
     }
 }
 
-function collision() {
-    const dx=red.x-white.x, dy=red.y-white.y;
-    const d=Math.hypot(dx,dy), min=R*2;
-    if (!d || d>=min) return;
+function resetBallAfterPocket(ball, isWhite) {
+    ball.vx = 0;
+    ball.vy = 0;
 
-    const nx=dx/d, ny=dy/d;
-    const overlap=min-d;
-    white.x-=nx*overlap/2;
-    white.y-=ny*overlap/2;
-    red.x+=nx*overlap/2;
-    red.y+=ny*overlap/2;
-
-    const rel=(white.vx-red.vx)*nx+(white.vy-red.vy)*ny;
-    if (rel<=0) return;
-
-    const impulse=rel*.96;
-    white.vx-=impulse*nx;
-    white.vy-=impulse*ny;
-    red.vx+=impulse*nx;
-    red.vy+=impulse*ny;
-}
-
-function pocketCheck() {
-    const hole=holes[targetIndex];
-    if (dist(red,hole)<27) {
-        score+=10;
-        saveData();
-        red.x=clamp(W/2,table.left+R,table.right-R);
-        red.y=230;
-        red.vx=0;
-        red.vy=0;
-        nextTarget();
+    if (isWhite) {
+        ball.x = W / 2;
+        ball.y = H - 150;
+    } else {
+        ball.x = W / 2;
+        ball.y = 230;
     }
 }
 
-function physics() {
-    [white,red].forEach(b => {
-        b.x+=b.vx;
-        b.y+=b.vy;
-        b.vx*=friction;
-        b.vy*=friction;
-        if (Math.abs(b.vx)<.02) b.vx=0;
-        if (Math.abs(b.vy)<.02) b.vy=0;
-        wall(b);
+function checkPockets() {
+    const pocketRadius = 34;
+
+    for (const hole of holes) {
+        if (distance(redBall, hole) <= pocketRadius) {
+            score += hole === holes[targetIndex] ? 10 : 3;
+
+            resetBallAfterPocket(redBall, false);
+            chooseNextTarget();
+            saveData();
+
+            return;
+        }
+    }
+
+    for (const hole of holes) {
+        if (distance(whiteBall, hole) <= pocketRadius) {
+            resetBallAfterPocket(whiteBall, true);
+            return;
+        }
+    }
+}
+function applyWallCollision(ball) {
+    const minX = table.left + ball.radius;
+    const maxX = table.right - ball.radius;
+    const minY = table.top + ball.radius;
+    const maxY = table.bottom - ball.radius;
+
+    if (ball.x < minX) {
+        ball.x = minX;
+        ball.vx = Math.abs(ball.vx) * 0.92;
+    }
+
+    if (ball.x > maxX) {
+        ball.x = maxX;
+        ball.vx = -Math.abs(ball.vx) * 0.92;
+    }
+
+    if (ball.y < minY) {
+        ball.y = minY;
+        ball.vy = Math.abs(ball.vy) * 0.92;
+    }
+
+    if (ball.y > maxY) {
+        ball.y = maxY;
+        ball.vy = -Math.abs(ball.vy) * 0.92;
+    }
+}
+
+function collideBalls() {
+    const dx = redBall.x - whiteBall.x;
+    const dy = redBall.y - whiteBall.y;
+    const currentDistance = Math.hypot(dx, dy);
+    const minimumDistance = BALL_RADIUS * 2;
+
+    if (
+        currentDistance === 0 ||
+        currentDistance >= minimumDistance
+    ) {
+        return;
+    }
+
+    const normalX = dx / currentDistance;
+    const normalY = dy / currentDistance;
+    const overlap = minimumDistance - currentDistance;
+
+    whiteBall.x -= normalX * overlap / 2;
+    whiteBall.y -= normalY * overlap / 2;
+    redBall.x += normalX * overlap / 2;
+    redBall.y += normalY * overlap / 2;
+
+    const relativeVelocity =
+        (whiteBall.vx - redBall.vx) * normalX +
+        (whiteBall.vy - redBall.vy) * normalY;
+
+    if (relativeVelocity <= 0) {
+        return;
+    }
+
+    const impulse = relativeVelocity * 0.96;
+
+    whiteBall.vx -= impulse * normalX;
+    whiteBall.vy -= impulse * normalY;
+
+    redBall.vx += impulse * normalX;
+    redBall.vy += impulse * normalY;
+}
+
+function updatePhysics() {
+    [whiteBall, redBall].forEach(ball => {
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+        ball.vx *= FRICTION;
+        ball.vy *= FRICTION;
+
+        if (Math.abs(ball.vx) < 0.02) {
+            ball.vx = 0;
+        }
+
+        if (Math.abs(ball.vy) < 0.02) {
+            ball.vy = 0;
+        }
     });
-    collision();
-    pocketCheck();
+
+    // نتحقق من دخول الكرة قبل ارتدادها من الحواف
+    checkPockets();
+
+    applyWallCollision(whiteBall);
+    applyWallCollision(redBall);
+
+    collideBalls();
 }
 
-function circle(x,y,r,fill,stroke) {
+function drawCircle(x, y, radius, fill, stroke) {
     ctx.beginPath();
-    ctx.arc(x,y,r,0,Math.PI*2);
-    ctx.fillStyle=fill;
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+
+    ctx.fillStyle = fill;
     ctx.fill();
+
     if (stroke) {
-        ctx.strokeStyle=stroke;
-        ctx.lineWidth=2;
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 2;
         ctx.stroke();
     }
 }
 
-function ball(ball,main,shadow) {
-    const g=ctx.createRadialGradient(
-        ball.x-6,ball.y-7,2,ball.x,ball.y,ball.r
+function drawPocket(hole, isTarget) {
+    const pocketGradient = ctx.createRadialGradient(
+        hole.x - 6,
+        hole.y - 6,
+        2,
+        hole.x,
+        hole.y,
+        34
     );
-    g.addColorStop(0,"#fff");
-    g.addColorStop(.3,main);
-    g.addColorStop(1,shadow);
-    ctx.shadowColor="#000b";
-    ctx.shadowBlur=8;
-    circle(ball.x,ball.y,ball.r,g);
-    ctx.shadowBlur=0;
-}
 
-function aim() {
-    if (!aiming || moving()) return;
-
-    const dx=white.x-pointer.x;
-    const dy=white.y-pointer.y;
-    const len=Math.hypot(dx,dy);
-    if (len<2) return;
-
-    const nx=dx/len, ny=dy/len;
-    const power=clamp(len,0,230);
-    document.getElementById("powerFill").style.width =
-        `${power/230*100}%`;
+    pocketGradient.addColorStop(0, "#000000");
+    pocketGradient.addColorStop(0.7, "#010202");
+    pocketGradient.addColorStop(1, "#26312d");
 
     ctx.save();
-    ctx.setLineDash([4,12]);
-    ctx.strokeStyle="#fff9";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.moveTo(white.x,white.y);
-    ctx.lineTo(white.x+nx*(220+power),white.y+ny*(220+power));
-    ctx.stroke();
-    ctx.setLineDash([]);
 
-    for(let i=1;i<=4;i++) circle(
-        white.x+nx*i*38,
-        white.y+ny*i*38,
-        3,
-        "#ffffffaa"
+    ctx.shadowColor = "#000";
+    ctx.shadowBlur = 12;
+
+    drawCircle(
+        hole.x,
+        hole.y,
+        31,
+        pocketGradient,
+        "#91a6ad"
     );
 
-    const sx=white.x-nx*(70+power);
-    const sy=white.y-ny*(70+power);
-    ctx.strokeStyle="#ffe5a077";
-    ctx.lineWidth=7;
-    ctx.beginPath();
-    ctx.moveTo(sx,sy);
-    ctx.lineTo(white.x-nx*20,white.y-ny*20);
-    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    if (isTarget) {
+        ctx.beginPath();
+        ctx.arc(hole.x, hole.y, 38, 0, Math.PI * 2);
+        ctx.strokeStyle = "#ffd166";
+        ctx.lineWidth = 3;
+        ctx.shadowColor = "#ffd166";
+        ctx.shadowBlur = 14;
+        ctx.stroke();
+    }
+
     ctx.restore();
 }
 
-function draw() {
-    ctx.clearRect(0,0,W,H);
+function drawBall(ball, mainColor, darkColor) {
+    const ballGradient = ctx.createRadialGradient(
+        ball.x - 6,
+        ball.y - 7,
+        2,
+        ball.x,
+        ball.y,
+        ball.radius
+    );
 
-    const g=ctx.createLinearGradient(0,0,W,H);
-    g.addColorStop(0,"#0c805b");
-    g.addColorStop(.5,"#07583f");
-    g.addColorStop(1,"#033c2d");
-    ctx.fillStyle=g;
-    ctx.fillRect(0,0,W,H);
+    ballGradient.addColorStop(0, "#ffffff");
+    ballGradient.addColorStop(0.25, mainColor);
+    ballGradient.addColorStop(1, darkColor);
 
-    const light=ctx.createRadialGradient(W/2,80,5,W/2,80,250);
-    light.addColorStop(0,"#8dffd044");
-    light.addColorStop(1,"#8dffd000");
-    ctx.fillStyle=light;
-    ctx.fillRect(0,0,W,H);
+    ctx.save();
+    ctx.shadowColor = "#000b";
+    ctx.shadowBlur = 9;
 
-    ctx.strokeStyle="#65dba566";
-    ctx.lineWidth=3;
-    ctx.strokeRect(table.left,table.top,
-        table.right-table.left,table.bottom-table.top);
+    drawCircle(
+        ball.x,
+        ball.y,
+        ball.radius,
+        ballGradient
+    );
 
-    holes.forEach((h,i)=>{
-        circle(h.x,h.y,27,"#020605");
-        if(i===targetIndex) {
-            ctx.beginPath();
-            ctx.arc(h.x,h.y,34,0,Math.PI*2);
-            ctx.strokeStyle="#ffd166";
-            ctx.lineWidth=3;
-            ctx.shadowColor="#ffd166";
-            ctx.shadowBlur=15;
-            ctx.stroke();
-            ctx.shadowBlur=0;
-        }
-    });
+    ctx.restore();
+}
 
-    if (challenge) {
-        circle(challenge.x,challenge.y,R,"#50fa7b55","#9affbd");
+function drawChallengeTarget() {
+    if (!challenge) {
+        return;
     }
 
-    aim();
-    ball(white,"#fff","#b9d8d4");
-    ball(red,"#ff4d5d","#940d1d");
+    ctx.save();
+
+    ctx.shadowColor = "#50fa7b";
+    ctx.shadowBlur = 16;
+
+    drawCircle(
+        challenge.x,
+        challenge.y,
+        BALL_RADIUS,
+        "#50fa7b55",
+        "#9affbd"
+    );
+
+    ctx.restore();
+}
+
+function drawAimGuide() {
+    if (!aiming || isMoving()) {
+        return;
+    }
+
+    const dx = whiteBall.x - pointer.x;
+    const dy = whiteBall.y - pointer.y;
+    const length = Math.hypot(dx, dy);
+
+    if (length < 2) {
+        return;
+    }
+
+    const directionX = dx / length;
+    const directionY = dy / length;
+    const power = clamp(length, 0, 230);
+
+    document.getElementById("powerFill").style.width =
+        `${(power / 230) * 100}%`;
+
+    ctx.save();
+
+    // خط التصويب المنقط
+    ctx.beginPath();
+    ctx.setLineDash([5, 12]);
+    ctx.moveTo(whiteBall.x, whiteBall.y);
+    ctx.lineTo(
+        whiteBall.x + directionX * (220 + power),
+        whiteBall.y + directionY * (220 + power)
+    );
+
+    ctx.strokeStyle = "#ffffff99";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // نقاط التصويب
+    for (let index = 1; index <= 4; index++) {
+        drawCircle(
+            whiteBall.x + directionX * index * 38,
+            whiteBall.y + directionY * index * 38,
+            3,
+            "#ffffffbb"
+        );
+    }
+
+    // عصا التصويب الشفافة
+    const cueStartX =
+        whiteBall.x - directionX * (80 + power);
+
+    const cueStartY =
+        whiteBall.y - directionY * (80 + power);
+
+    const cueGradient = ctx.createLinearGradient(
+        cueStartX,
+        cueStartY,
+        whiteBall.x,
+        whiteBall.y
+    );
+
+    cueGradient.addColorStop(0, "#ffe5a022");
+    cueGradient.addColorStop(0.7, "#ffe5a077");
+    cueGradient.addColorStop(1, "#ffffffcc");
+
+    ctx.beginPath();
+    ctx.moveTo(cueStartX, cueStartY);
+    ctx.lineTo(
+        whiteBall.x - directionX * 20,
+        whiteBall.y - directionY * 20
+    );
+
+    ctx.strokeStyle = cueGradient;
+    ctx.lineWidth = 7;
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function drawTable() {
+    ctx.clearRect(0, 0, W, H);
+
+    const clothGradient = ctx.createLinearGradient(
+        0,
+        0,
+        W,
+        H
+    );
+
+    clothGradient.addColorStop(0, "#0c805b");
+    clothGradient.addColorStop(0.5, "#07583f");
+    clothGradient.addColorStop(1, "#033c2d");
+
+    ctx.fillStyle = clothGradient;
+    ctx.fillRect(0, 0, W, H);
+
+    // إضاءة علوية على القماش
+    const lightGradient = ctx.createRadialGradient(
+        W / 2,
+        80,
+        5,
+        W / 2,
+        80,
+        260
+    );
+
+    lightGradient.addColorStop(0, "#b5ffdb55");
+    lightGradient.addColorStop(1, "#b5ffdb00");
+
+    ctx.fillStyle = lightGradient;
+    ctx.fillRect(0, 0, W, H);
+
+    // حدود منطقة اللعب
+    ctx.strokeStyle = "#75e4ae88";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(
+        table.left,
+        table.top,
+        table.right - table.left,
+        table.bottom - table.top
+    );
+
+    holes.forEach((hole, index) => {
+        drawPocket(hole, index === targetIndex);
+    });
+
+    drawChallengeTarget();
+    drawAimGuide();
+
+    drawBall(whiteBall, "#ffffff", "#b9d8d4");
+    drawBall(redBall, "#ff4d5d", "#940d1d");
 }
 
 function shoot() {
-    if (moving()) return;
-    const dx=white.x-pointer.x, dy=white.y-pointer.y;
-    const len=Math.hypot(dx,dy);
-    if(len<10) return;
+    if (isMoving()) {
+        return;
+    }
 
-    const power=clamp(len,0,230)/230*27;
-    white.vx=dx/len*power;
-    white.vy=dy/len*power;
+    const dx = whiteBall.x - pointer.x;
+    const dy = whiteBall.y - pointer.y;
+    const length = Math.hypot(dx, dy);
+
+    if (length < 10) {
+        return;
+    }
+
+    const power = clamp(length, 0, 230);
+    const finalPower = (power / 230) * MAX_POWER;
+
+    whiteBall.vx = (dx / length) * finalPower;
+    whiteBall.vy = (dy / length) * finalPower;
+
     shots++;
     saveData();
-    nextTarget();
 
-    if(shots%30===0) startChallenge();
+    // يتغير الهدف بعد كل تصويبة
+    chooseNextTarget();
+
+    if (shots % 30 === 0) {
+        startChallenge();
+    }
+
+    document.getElementById("powerFill").style.width = "0%";
 }
 
-canvas.addEventListener("pointerdown",e=>{
-    if(moving()) return;
-    aiming=true;
-    pointer=position(e);
-    canvas.setPointerCapture(e.pointerId);
+canvas.addEventListener("pointerdown", event => {
+    if (isMoving()) {
+        return;
+    }
+
+    aiming = true;
+    pointer = getPointerPosition(event);
+
+    canvas.setPointerCapture(event.pointerId);
 });
-canvas.addEventListener("pointermove",e=>{
-    if(aiming) pointer=position(e);
+
+canvas.addEventListener("pointermove", event => {
+    if (!aiming) {
+        return;
+    }
+
+    pointer = getPointerPosition(event);
 });
-canvas.addEventListener("pointerup",()=>{
-    if(!aiming) return;
-    aiming=false;
+
+canvas.addEventListener("pointerup", () => {
+    if (!aiming) {
+        return;
+    }
+
+    aiming = false;
     shoot();
-    document.getElementById("powerFill").style.width="0%";
-});
-canvas.addEventListener("pointercancel",()=>{
-    aiming=false;
-    document.getElementById("powerFill").style.width="0%";
 });
 
-function loop(now) {
-    physics();
+canvas.addEventListener("pointercancel", () => {
+    aiming = false;
+    document.getElementById("powerFill").style.width = "0%";
+});
+
+function gameLoop(now) {
+    const elapsed = now - lastTime;
+    lastTime = now;
+
+    updatePhysics();
     updateChallenge(now);
-    draw();
-    requestAnimationFrame(loop);
+    drawTable();
+
+    requestAnimationFrame(gameLoop);
 }
 
-nextTarget();
-requestAnimationFrame(loop);
+chooseNextTarget();
+showPage("homePage");
+requestAnimationFrame(gameLoop);
+
 </script>
 </body>
 </html>
