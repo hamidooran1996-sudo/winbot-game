@@ -1,6 +1,6 @@
 // التبويبات + المكافآت + المهام + الأصدقاء + الترتيب. يعمل مع الخادم داخل تيليجرام، وبوضع تجريبي محلي خارجه.
 (function () {
-  const BOT = "YOUR_BOT_USERNAME";   // اسم بوتك بدون @
+  const BOT = "@bestwin9_bot";   // اسم بوتك بدون @
   const ADS_BLOCK_ID = "";           // رقم وحدة Adsgram (فارغ = إعلان تجريبي)
   const BL = (window.BL = window.BL || {});
   BL.plv = 1; try { BL.cueId = localStorage.cue; } catch (e) {} BL.cueId = BL.cueId || "classic";
