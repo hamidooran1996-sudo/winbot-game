@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b1d14">
+<title>بلياردو 8</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <section id="sc-play" class="screen">
+    <header id="hud">
+      <div class="player" id="p0"><span class="name">اللاعب 1</span><span class="grp">—</span><div class="tray"></div></div>
+      <div id="status">اختر نمط اللعب</div>
+      <div class="player" id="p1"><span class="name">اللاعب 2</span><span class="grp">—</span><div class="tray"></div></div>
+      <div class="btns"><button id="btnSound" aria-label="الصوت">🔊</button><button id="btnHelp" aria-label="مساعدة">❓</button><button id="btnMenu" aria-label="القائمة">☰</button></div>
+    </header>
+    <div id="playfield">
+    <main id="stage">
+      <canvas id="table"></canvas>
+      <div id="rotate">📱 يفضَّل تدوير الهاتف أفقياً <button id="rotateClose">✕</button></div>
+      <div id="menu" class="overlay">
+        <div class="card">
+          <h1 id="menuTitle">🎱 بلياردو 8</h1>
+          <p id="menuMsg">اسحب على الطاولة لتدوير التصويب، ثم اسحب شريط القوة للأسفل وأفلته للتسديد.</p>
+          <select id="level" aria-label="مستوى الكمبيوتر">
+            <option value="easy">الكمبيوتر: سهل (+5)</option><option value="normal" selected>الكمبيوتر: متوسط (+15)</option><option value="hard">الكمبيوتر: صعب (+30)</option></select>
+          <button class="ghost" id="btnGuide">🎯 خط التصويب: يعمل</button>
+          <button class="primary" data-mode="cpu">لاعب ضد الكمبيوتر</button>
+          <button class="primary" data-mode="pvp">لاعبان على نفس الجهاز</button>
+          <button class="ghost" data-mode="practice">🎯 تدريب (بدون خصم)</button>
+          <button class="primary" id="btnOnline">🌐 مباراة أونلاين</button>
+          <button class="ghost" id="btnRoom">🔑 غرفة بكود صديق</button>
+          <button id="btnResume" class="ghost hidden">متابعة المباراة</button>
+        </div>
+      </div>
+    </main>
+    <aside id="side"><div id="power" class="off" aria-label="شريط القوة"><div id="knob">↓</div></div><div id="spin" aria-label="دوران الكرة"><b id="spinDot"></b></div></aside>
+    </div>
+  </section>
+
+  <section id="sc-top" class="screen page hidden">
+    <h2>🏆 الترتيب</h2>
+    <div class="seg"><button data-by="points" class="on">النقاط</button><button data-by="wins">الانتصارات</button><button data-by="elo">القوة</button></div>
+    <div id="topList"></div>
+  </section>
+
+  <section id="sc-rewards" class="screen page hidden">
+    <div class="pcard"><div id="avatar">؟</div><div class="pi"><b id="pName">لاعب</b><small id="pLv">المستوى 1</small></div><div id="myPoints">⭐ 0</div></div>
+    <h3>📅 التسجيل اليومي</h3>
+    <div id="dayGrid"></div>
+    <button class="primary" id="btnDaily">🎁 سجّل حضورك واستلم</button>
+    <button class="ghost" id="btnChest">🎁 صندوق الهدايا اليومي</button>
+    <h3>📺 مكافأة الإعلانات</h3>
+    <button class="ghost" id="btnAd">📺 شاهد إعلانا واحصل على +10 نقاط</button>
+    <h3>📋 المهام اليومية</h3><div id="missions"></div>
+    <p class="hint" id="modeNote"></p>
+  </section>
+
+  <section id="sc-friends" class="screen page hidden">
+    <h2>👥 الأصدقاء</h2>
+    <div class="stat"><b id="refCount">0</b><span>صديق انضم عبر رابطك</span></div>
+    <p class="hint">تحصل على +50 نقطة عندما يكمل صديقك أول مباراة له.</p>
+    <button class="primary" id="btnShare">📤 شارك رابط البوت</button>
+    <button class="ghost" id="btnCopy">🔗 نسخ الرابط</button>
+  </section>
+
+  <section id="sc-me" class="screen page hidden">
+    <h2 id="meName">👤 حسابي</h2>
+    <div class="lv"><b id="stLevel">المستوى 1</b><div class="bar"><i id="xpFill"></i></div><span id="xpTxt" class="hint"></span></div>
+    <div class="grid">
+      <div class="stat"><b id="stPoints">0</b><span>النقاط</span></div><div class="stat"><b id="stRank">#-</b><span>المرتبة</span></div>
+      <div class="stat"><b id="stGames">0</b><span>المباريات</span></div><div class="stat"><b id="stWins">0</b><span>الانتصارات</span></div>
+      <div class="stat"><b id="stStreak">0</b><span>أيام متتالية</span></div><div class="stat"><b id="stElo">1000</b><span id="stTier">برونزي</span></div>
+    </div>
+    <h2>🎯 العصي</h2><div id="cueGrid" class="grid"></div>
+    <h2>🏅 الإنجازات</h2><div id="badges" class="grid3"></div>
+    <h2>⚙️ الإعدادات</h2><label class="row">🔊 الصوت <input type="range" id="vol" min="0" max="100" value="90"></label><button class="ghost" id="btnVib">📳 الاهتزاز: يعمل</button>
+  </section>
+
+  <nav id="tabs">
+    <button data-tab="play" class="on"><b>🎱</b>العب</button>
+    <button data-tab="top"><b>🏆</b>الترتيب</button>
+    <button data-tab="rewards"><b>🎁</b>المكافآت</button>
+    <button data-tab="friends"><b>👥</b>الأصدقاء</button>
+    <button data-tab="me"><b>👤</b>حسابي</button>
+  </nav>
+</div>
+<div id="toast"></div>
+<div id="help" class="overlay hidden"><div class="card"><h1>🎯 كيف تلعب؟</h1>
+  <p style="text-align:right">1) اسحب بإصبعك على الطاولة لتدوير اتجاه التصويب.<br>2) اللوحة الصغيرة (الكرة البيضاء) تضبط الدوران: أعلى = متابعة، أسفل = سحب، جانب = دوران جانبي.<br>3) اسحب شريط القوة للأسفل ثم أفلته للتسديد.<br>4) أدخل كراتك (المصمتة 1–7 أو المخططة 9–15) ثم الكرة السوداء 8.<br>5) في الأونلاين لديك 45 ثانية لكل دور.</p>
+  <button class="primary" id="helpOk">فهمت</button></div></div>
+<div id="netbox" class="overlay hidden"><div class="card"><h1>🌐 أونلاين</h1><p id="netTxt">جارٍ البحث عن خصم…</p><button class="ghost" id="netCancel">إلغاء</button></div></div>
+<div id="adbox" class="overlay hidden"><div class="card"><h1>📺 إعلان تجريبي</h1>
+  <p>هذا إعلان تجريبي. ضع رقم وحدة Adsgram في telegram.js لعرض إعلانات حقيقية.</p>
+  <button class="primary" id="adDone" disabled>⏳ 5</button><button class="ghost" id="adClose">إغلاق</button></div></div>
+
+<script src="js/config.js"></script>
+<script src="js/geom.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/game.js"></script>
+<script src="js/input.js"></script>
+<script src="js/main.js"></script>
+<script src="js/online.js"></script>
+<script src="js/telegram.js"></script>
+<!-- مكتبات خارجية بعد اللعبة وبدون حجب: لا تمنع اللعبة من العمل إن تأخرت أو حُجبت -->
+<script async src="https://telegram.org/js/telegram-web-app.js"></script>
+<script async src="https://sad.adsgram.ai/js/sad.min.js"></script>
+</body>
+</html>
